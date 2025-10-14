@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Authorization Server</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { margin: 8px 0; padding: 6px; width: 250px; }
+    button { padding: 8px 15px; margin-top: 10px; cursor: pointer; }
+    .box { border: 1px solid #ccc; padding: 20px; width: 300px; }
+  </style>
+</head>
+<body>
+
+  <h2>Login Authorization Server</h2>
+
+  <div class="box">
+    <label>Usuario</label><br>
+    <input type="text" id="username"><br>
+
+    <label>Contraseña</label><br>
+    <input type="password" id="password"><br>
+
+    <button onclick="login()">Iniciar Sesión</button>
+  </div>
+
+  <h3>Token</h3>
+  <textarea id="tokenBox" rows="6" cols="50" readonly></textarea><br>
+  <button onclick="verPerfil()">Ver /api/me</button>
+
+  <pre id="perfil"></pre>
+
+  <script>
+    function login() {
+      const data = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+      };
+
+      fetch("http://localhost:9000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Login fallido");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("tokenBox").value = data.token;
+        localStorage.setItem("token", data.token);
+        alert("Login exitoso");
+      })
+      .catch(err => alert(err));
+    }
+
+    function verPerfil() {
+      const token = localStorage.getItem("token");
+
+      fetch("http://localhost:9000/api/me", {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + token }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("No autorizado");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("perfil").textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => alert(err));
+    }
+  </script>
+
+</body>
+</html>
