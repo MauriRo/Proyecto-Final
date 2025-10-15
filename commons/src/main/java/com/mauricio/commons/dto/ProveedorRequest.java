@@ -1,0 +1,13 @@
+package com.mauricio.commons.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record ProveedorRequest(
+		@NotBlank(message = "El nombre es requerido")
+		@Size(min = 1, max = 30, message = "El nombre debe tener entre 1 y 30 caracteres")
+		String nombre,
+		@NotBlank(message = "La direccion es requerida")
+		@Size(min = 1, max = 100, message = "La direccion debe tener entre 1 y 100 caracteres")
+		String direccion
+) {}
