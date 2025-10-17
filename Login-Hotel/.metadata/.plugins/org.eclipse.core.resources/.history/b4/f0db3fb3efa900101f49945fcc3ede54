@@ -1,0 +1,5 @@
+package com.christian.commons.dto;
+
+public record ErrorResponse(int code, String mensaje) {
+
+}

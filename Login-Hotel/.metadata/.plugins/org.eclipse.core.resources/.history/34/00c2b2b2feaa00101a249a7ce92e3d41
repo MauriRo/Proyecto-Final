@@ -1,0 +1,61 @@
+package com.hotel.habitaciones.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mauricio.habitaciones.model.Habitacion;
+import com.mauricio.habitaciones.repository.HabitacionRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class HabitacionService {
+
+    private final HabitacionRepository repo;
+
+    public HabitacionService(HabitacionRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<Habitacion> listarTodas() {
+        return repo.findAll();
+    }
+
+    public Optional<Habitacion> obtenerPorId(Long id) {
+        return repo.findById(id);
+    }
+
+    public Optional<Habitacion> obtenerPorNumero(Integer numero) {
+        return repo.findByNumero(numero);
+    }
+
+    @Transactional
+    public Habitacion crear(Habitacion h) {
+        if (repo.existsByNumero(h.getNumero())) {
+            throw new IllegalArgumentException("Ya existe una habitación con ese número");
+        }
+        return repo.save(h);
+    }
+
+    @Transactional
+    public Habitacion actualizar(Long id, Habitacion nuevosDatos) {
+        Habitacion h = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+        h.setTipo(nuevosDatos.getTipo());
+        h.setDescripcion(nuevosDatos.getDescripcion());
+        h.setPrecio(nuevosDatos.getPrecio());
+        h.setCapacidad(nuevosDatos.getCapacidad());
+        h.setEstado(nuevosDatos.getEstado());
+        return repo.save(h);
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        repo.deleteById(id);
+    }
+
+    public List<Habitacion> buscarPorEstado(String estado) {
+        return repo.findByEstado(estado);
+    }
+}

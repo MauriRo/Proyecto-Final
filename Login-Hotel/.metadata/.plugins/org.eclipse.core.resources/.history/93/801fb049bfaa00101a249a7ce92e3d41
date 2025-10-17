@@ -1,0 +1,13 @@
+package com.hotel.huespedes.service;
+
+import java.util.List;
+
+import com.mauricio.huespedes.entity.Huesped;
+
+public interface HuespedService {
+    List<Huesped> listar();
+    Huesped obtenerPorId(Long id);
+    Huesped crear(Huesped huesped);
+    Huesped actualizar(Long id, Huesped huesped);
+    void eliminar(Long id);
+}

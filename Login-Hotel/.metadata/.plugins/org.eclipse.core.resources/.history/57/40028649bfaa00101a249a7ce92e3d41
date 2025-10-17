@@ -1,0 +1,57 @@
+package com.hotel.huespedes.service;
+
+import com.hotel.huespedes.entity.Huesped;
+import com.hotel.huespedes.exception.ResourceNotFoundException;
+import com.hotel.huespedes.repository.HuespedRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class HuespedServiceImpl implements HuespedService {
+
+    private final HuespedRepository repository;
+
+    public HuespedServiceImpl(HuespedRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public List<Huesped> listar() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Huesped obtenerPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Huésped no encontrado con id " + id));
+    }
+
+    @Override
+    public Huesped crear(Huesped huesped) {
+        try {
+            return repository.save(huesped);
+        } catch (DataIntegrityViolationException ex) {
+            throw new RuntimeException("Error: el email, teléfono o documento ya existe.");
+        }
+    }
+
+    @Override
+    public Huesped actualizar(Long id, Huesped nuevo) {
+        Huesped existente = obtenerPorId(id);
+        existente.setNombre(nuevo.getNombre());
+        existente.setApellido(nuevo.getApellido());
+        existente.setEmail(nuevo.getEmail());
+        existente.setTelefono(nuevo.getTelefono());
+        existente.setDocumento(nuevo.getDocumento());
+        existente.setNacionalidad(nuevo.getNacionalidad());
+        return repository.save(existente);
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        Huesped existente = obtenerPorId(id);
+        repository.delete(existente);
+    }
+}

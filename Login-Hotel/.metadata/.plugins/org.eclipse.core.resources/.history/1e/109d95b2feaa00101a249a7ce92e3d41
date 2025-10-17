@@ -1,0 +1,72 @@
+package com.hotel.habitaciones.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.mauricio.habitaciones.model.Habitacion;
+import com.mauricio.habitaciones.service.HabitacionService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/habitaciones")
+public class HabitacionController {
+
+    private final HabitacionService service;
+
+    public HabitacionController(HabitacionService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<Habitacion> listar() {
+        return service.listarTodas();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Habitacion> porId(@PathVariable Long id) {
+        return service.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/numero/{numero}")
+    public ResponseEntity<Habitacion> porNumero(@PathVariable Integer numero) {
+        return service.obtenerPorNumero(numero)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/estado/{estado}")
+    public List<Habitacion> porEstado(@PathVariable String estado) {
+        return service.buscarPorEstado(estado);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> crear(@Valid @RequestBody Habitacion habitacion) {
+        try {
+            Habitacion creada = service.crear(habitacion);
+            return ResponseEntity.status(HttpStatus.CREATED).body(creada);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Habitacion habitacion) {
+        try {
+            Habitacion actualizada = service.actualizar(id, habitacion);
+            return ResponseEntity.ok(actualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        service.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,0 +1,75 @@
+package com.mauricio.habitaciones.service;
+
+import com.mauricio.commons.dto.HabitacionRequest;
+import com.mauricio.commons.dto.HabitacionResponse;
+import com.mauricio.habitaciones.model.Habitacion;
+import com.mauricio.habitaciones.repository.HabitacionRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class HabitacionService {
+
+    private final HabitacionRepository repository;
+
+    public HabitacionService(HabitacionRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<HabitacionResponse> getAll() {
+        return repository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public HabitacionResponse create(HabitacionRequest request) {
+        if(repository.findByNumero(request.getNumero()).isPresent()) {
+            throw new RuntimeException("Número de habitación ya existe");
+        }
+        Habitacion habitacion = toEntity(request);
+        return toResponse(repository.save(habitacion));
+    }
+
+    @Transactional
+    public HabitacionResponse update(Long id, HabitacionRequest request) {
+        Habitacion habitacion = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+        habitacion.setNumero(request.getNumero());
+        habitacion.setTipo(request.getTipo());
+        habitacion.setDescripcion(request.getDescripcion());
+        habitacion.setPrecio(request.getPrecio());
+        habitacion.setCapacidad(request.getCapacidad());
+        habitacion.setEstado(request.getEstado());
+        return toResponse(repository.save(habitacion));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+
+    private HabitacionResponse toResponse(Habitacion h) {
+        HabitacionResponse res = new HabitacionResponse();
+        res.setId(h.getId());
+        res.setNumero(h.getNumero());
+        res.setTipo(h.getTipo());
+        res.setDescripcion(h.getDescripcion());
+        res.setPrecio(h.getPrecio());
+        res.setCapacidad(h.getCapacidad());
+        res.setEstado(h.getEstado());
+        return res;
+    }
+
+    private Habitacion toEntity(HabitacionRequest req) {
+        Habitacion h = new Habitacion();
+        h.setNumero(req.getNumero());
+        h.setTipo(req.getTipo());
+        h.setDescripcion(req.getDescripcion());
+        h.setPrecio(req.getPrecio());
+        h.setCapacidad(req.getCapacidad());
+        h.setEstado(req.getEstado());
+        return h;
+    }
+}

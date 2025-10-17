@@ -1,0 +1,56 @@
+package com.mauricio.habitaciones.service;
+
+import com.mauricio.commons.dto.HabitacionRequest;
+import com.mauricio.commons.dto.HabitacionResponse;
+import com.mauricio.habitaciones.mapper.HabitacionMapper;
+import com.mauricio.habitaciones.model.Habitacion;
+import com.mauricio.habitaciones.repository.HabitacionRepository;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class HabitacionServiceImpl implements HabitacionService {
+
+    private final HabitacionRepository repository;
+    private final HabitacionMapper mapper;
+
+    public HabitacionServiceImpl(HabitacionRepository repository, HabitacionMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public List<HabitacionResponse> getAll() {
+        return repository.findAll().stream().map(mapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public HabitacionResponse create(HabitacionRequest request) {
+        repository.findByNumero(request.getNumero())
+                .ifPresent(h -> { throw new IllegalArgumentException("Número de habitación ya existe"); });
+        Habitacion h = mapper.toEntity(request);
+        return mapper.toResponse(repository.save(h));
+    }
+
+    @Override
+    @Transactional
+    public HabitacionResponse update(Long id, HabitacionRequest request) {
+        Habitacion h = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Habitación no encontrada"));
+        mapper.updateEntity(h, request);
+        return mapper.toResponse(repository.save(h));
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        if(!repository.existsById(id)) {
+            throw new IllegalArgumentException("Habitación no encontrada");
+        }
+        repository.deleteById(id);
+    }
+}

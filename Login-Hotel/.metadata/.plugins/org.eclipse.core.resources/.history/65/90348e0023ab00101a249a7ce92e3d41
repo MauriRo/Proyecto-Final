@@ -1,0 +1,44 @@
+package com.mauricio.habitaciones.controller;
+
+import com.mauricio.commons.dto.HabitacionRequest;
+import com.mauricio.commons.dto.HabitacionResponse;
+import com.mauricio.habitaciones.service.HabitacionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/habitaciones")
+@CrossOrigin(origins = "http://localhost:4200")
+public class HabitacionController {
+
+    private final HabitacionService service;
+
+    public HabitacionController(HabitacionService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<HabitacionResponse> getAll() {
+        return service.getAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<HabitacionResponse> create(@Valid @RequestBody HabitacionRequest request) {
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public HabitacionResponse update(@PathVariable Long id, @Valid @RequestBody HabitacionRequest request) {
+        return service.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

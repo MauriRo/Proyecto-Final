@@ -1,0 +1,15 @@
+package com.mauricio.huespedes;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+
+@SpringBootApplication(scanBasePackages = {"com.mauricio.huespedes","com.mauricio.commons"})
+@EnableFeignClients
+public class HuespedesServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(HuespedesServiceApplication.class, args);
+        }
+ 
+}

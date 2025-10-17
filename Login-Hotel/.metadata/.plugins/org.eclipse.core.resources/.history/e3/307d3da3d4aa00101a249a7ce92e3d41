@@ -1,0 +1,71 @@
+package com.mauricio.huespedes.service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mauricio.huespedes.entity.Huesped;
+import com.mauricio.huespedes.mapper.HuespedMapper;
+import com.mauricio.huespedes.repository.HuespedRepository;
+import com.mauricio.commons.dto.HuespedRequest;
+import com.mauricio.commons.dto.HuespedResponse;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Transactional
+@AllArgsConstructor
+@Slf4j
+public class HuespedServiceImpl implements HuespedService {
+
+    private final HuespedRepository repository;
+    private final HuespedMapper mapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HuespedResponse> listar() {
+        log.info("Listado de huéspedes solicitado");
+        return repository.findAll().stream().map(mapper::entityToResponse).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HuespedResponse obtenerPorId(Long id) {
+        log.info("Buscando huésped con id {}", id);
+        return mapper.entityToResponse(getHuespedOrThrow(id));
+    }
+
+    @Override
+    public HuespedResponse insertar(HuespedRequest request) {
+        log.info("Insertando huésped {}", request.nombre());
+        return mapper.entityToResponse(repository.save(mapper.requestToEntity(request)));
+    }
+
+    @Override
+    public HuespedResponse actualizar(HuespedRequest request, Long id) {
+        log.info("Actualizando huésped id {}", id);
+        Huesped huesped = getHuespedOrThrow(id);
+        huesped.setNombre(request.nombre());
+        huesped.setApellido(request.apellido());
+        huesped.setEmail(request.email());
+        huesped.setTelefono(request.telefono());
+        huesped.setDocumento(request.documento());
+        huesped.setNacionalidad(request.nacionalidad());
+        return mapper.entityToResponse(repository.save(huesped));
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        log.info("Eliminando huésped id {}", id);
+        repository.delete(getHuespedOrThrow(id));
+    }
+
+    private Huesped getHuespedOrThrow(Long id) {
+        return repository.findById(id).orElseThrow(() ->
+            new NoSuchElementException("Huésped no encontrado con id: " + id)
+        );
+    }
+}

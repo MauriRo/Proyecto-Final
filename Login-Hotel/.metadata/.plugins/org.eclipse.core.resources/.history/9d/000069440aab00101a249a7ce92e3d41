@@ -1,0 +1,19 @@
+spring:
+application:
+name:com.hotel
+  
+  datasource:
+    spring.datasource.url:jdbc:oracle:thin:@//localhost:1521/FREEPDB1
+    spring.datasource.username: HOTEL_APP
+    spring.datasource.password: hotel123
+    spring.datasource.driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  
+        
+        dialect: org.hibernate.dialect.Oracle12cDialect
+        show_sql: true
+server:
+  port:8080
+

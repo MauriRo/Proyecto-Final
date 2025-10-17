@@ -1,0 +1,41 @@
+package com.mauricio.commons.dto;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
+
+public class HabitacionRequest {
+
+    @NotNull @Min(1)
+    private Integer numero;
+
+    @NotBlank @Size(max = 20)
+    private String tipo;
+
+    private String descripcion;
+
+    @NotNull @Min(1)
+    private BigDecimal precio;
+
+    @NotNull @Min(1)
+    private Integer capacidad;
+
+    @NotBlank
+    private String estado;
+
+    // Getters y setters
+    public Integer getNumero() { return numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public BigDecimal getPrecio() { return precio; }
+    public void setPrecio(BigDecimal precio) { this.precio = precio; }
+    public Integer getCapacidad() { return capacidad; }
+    public void setCapacidad(Integer capacidad) { this.capacidad = capacidad; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+}

@@ -1,0 +1,11 @@
+package com.hotel.huespedes.repository;
+
+import com.hotel.huespedes.entity.Huesped;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface HuespedRepository extends JpaRepository<Huesped, Long> {
+    Optional<Huesped> findByEmail(String email);
+    Optional<Huesped> findByDocumento(String documento);
+}

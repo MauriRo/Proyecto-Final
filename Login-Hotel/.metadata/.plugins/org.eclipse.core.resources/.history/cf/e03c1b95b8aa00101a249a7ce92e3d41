@@ -1,0 +1,5 @@
+package com.mauricio.commons.dto;
+
+public class HuespedRequest {
+
+}

@@ -1,0 +1,5 @@
+package com.mauricio.habitaciones.service;
+
+public class HabitacionServiceImpl {
+
+}

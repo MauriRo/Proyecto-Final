@@ -1,0 +1,13 @@
+package com.mauricio.huespedess.repositories;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.mauricio.huespedess.model.Huesped;
+
+import java.util.Optional;
+
+public interface HuespedRepository extends JpaRepository<Huesped, Long> {
+    Optional<Huesped> findByEmail(String email);
+    Optional<Huesped> findByTelefono(String telefono);
+}

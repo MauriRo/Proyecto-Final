@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.mauricio.huespedess.HuespedessApplication"/>
+    <fullyQualifiedTypeName name="com.mauricio.huespedess.exception.ResourceNotFoundException"/>
+    <fullyQualifiedTypeName name="com.mauricio.huespedes.entity.Huesped"/>
+    <fullyQualifiedTypeName name="org.springframework.cloud.openfeign.EnableFeignClients"/>
+    <fullyQualifiedTypeName name="com.mauricio.commons.controllers.CommonController"/>
+    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotBlank"/>
+    <fullyQualifiedTypeName name="java.beans.BeanProperty"/>
+    <fullyQualifiedTypeName name="org.springframework.context.annotation.Bean"/>
+</qualifiedTypeNameHistroy>
